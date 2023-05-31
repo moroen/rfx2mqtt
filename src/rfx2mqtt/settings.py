@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     "constance.backends.database",
     "api.apps.ApiConfig",
     "django_mqtt",
-    "transport.apps.TransportConfig",
+    "django_rfx",
     "channels",
 ]
 
@@ -97,6 +97,9 @@ CONSTANCE_CONFIG = {
     "RFX_ADD_UNKNOWN": (True, "Add new devices on events"),
     "RFX_SWITCH_ON_LEVEL_SET": (True, "Set state to True on level change"),
 }
+
+# MQTT
+MQTT_CONFIG = {"USE_CONSTANCE": True}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -182,6 +185,7 @@ LOGGING = {
         "daphne": {"handlers": ["console"], "level": "INFO", "propagate": False},
         "asyncio": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
         "api": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
+        "RFXtrx": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
     },
 }
 #     "filters": {

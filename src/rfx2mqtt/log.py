@@ -20,7 +20,7 @@ class CustomFormatter(logging.Formatter):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.style = color_style()
-        self.fmt = "%(name)15s | %(levelname)8s | %(message)s"
+        self.fmt = "%(name)25s | %(levelname)8s | %(message)s"
         self.FORMATS = {
             logging.DEBUG: self.grey + self.fmt + self.reset,
             logging.INFO: self.blue + self.fmt + self.reset,

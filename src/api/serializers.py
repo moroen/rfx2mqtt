@@ -42,6 +42,7 @@ class CustomSerializer(serializers.ModelSerializer):
         log.debug("CustomSerializer_update with data {}".format(validated_data))
         targetDevice = super().update(instance, validated_data)
         targetDevice.send_state()
+        targetDevice.set_state()
         return targetDevice
 
 
@@ -62,7 +63,7 @@ class SwitchSerializer(CustomSerializer):
         log.debug("SwitchSerializer-update")
         if "state" in validated_data:
             state = validated_data["state"]
-            instance.set_state(state)
+            # instance.set_state(state)
 
         return super().update(instance, validated_data)
 

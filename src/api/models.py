@@ -1,9 +1,9 @@
 from django.db import models
-import transport.rfx as rfx
 
 # import transport.mqtt as mqtt
 
 import django_mqtt as mqtt
+import django_rfx as rfx
 
 from polymorphic.models import PolymorphicModel
 from django.core.serializers.json import DjangoJSONEncoder
@@ -15,7 +15,7 @@ import decimal
 
 import logging
 
-from transport.models import PacketType, Protocol
+from django_rfx.models import PacketType, Protocol
 
 
 # Json-classes
@@ -125,24 +125,20 @@ class Device(PolymorphicModel):
 class StateDevice(Device):
     state = models.BooleanField(default=False)
 
-    def set_state(self, state):
-        if not isinstance(state, bool):
-            log.error("Received a non-bool state value")
-        else:
-            # self.state = state
-            # self.save()
+    def set_state(self, state=None):
+        state = self.state if state is None else state
 
-            log.debug(
-                "Setting state to {} for device {}:{} with packet_type {}".format(
-                    state, self.ident, self.unit, self.packet_type_id
-                )
+        log.debug(
+            "Setting state to {} for device {}:{} with packet_type {}".format(
+                state, self.ident, self.unit, self.packet_type_id
             )
+        )
 
-            rfx.set_state(
-                "{}:{}".format(self.ident, self.unit),
-                self.packet_type_id,
-                state,
-            )
+        rfx.set_state(
+            "{}:{}".format(self.ident, self.unit),
+            self.packet_type_id,
+            state,
+        )
 
     class Meta:
         abstract = True
