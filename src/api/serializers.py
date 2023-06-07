@@ -96,7 +96,6 @@ class LightSerializer(CustomSerializer):
 class TemperatureSerializer(CustomSerializer):
     def create(self, validated_data):
         temp = super().create(validated_data)
-        temp.send_state()
         return temp
 
     class Meta:
@@ -326,14 +325,19 @@ class DevicePolymorphicSerializer(PolymorphicSerializer):
 #         fields = ["id", "name", "devices"]
 
 
-class ConfigSerializer(serializers.ModelSerializer):
+class ConfigSerializer(serializers.HyperlinkedModelSerializer):
     default = serializers.SerializerMethodField()
     # help_text = serializers.SerializerMethodField()
     value = serializers.SerializerMethodField()
 
+    id = serializers.SerializerMethodField()
+
     class Meta:
         model = Constance
-        fields = ("key", "default", "value")
+        fields = ("id", "key", "default", "value")
+
+    def get_id(self, obj):
+        return obj.key
 
     def get_default(self, obj):
         default, _ = settings.CONSTANCE_CONFIG.get(obj.key)
@@ -345,3 +349,5 @@ class ConfigSerializer(serializers.ModelSerializer):
 
     def get_value(self, obj):
         return getattr(config, obj.key, None)
+    
+

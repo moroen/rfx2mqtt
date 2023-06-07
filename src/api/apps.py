@@ -19,8 +19,6 @@ from time import sleep
 
 log = logging.getLogger("api")
 
-from constance.signals import config_updated
-
 # def parse_state_payload(payload) -> bool:
 #     if payload.lower() == "on":
 #         return True
@@ -35,16 +33,26 @@ from constance.signals import config_updated
 def get_device_id(msg: MQTTMessage):
     return msg.topic.split("/")[2]
 
+@django_rfx.callback()
+def callback(id, unit, event):
+    
+    if isinstance(event, django_rfx.SensorEvent):
+        log.debug("Received sensor event: {}".format(event))
+        from .serializers import TemperatureSerializer
+        packet_type = hex(event.device.packettype)
+        device = event.device
 
-@receiver(config_updated)
-def constance_updated(sender, key, old_value, new_value, **kwargs):
-    if old_value is None:
-        return
+        if packet_type == "0x52":  
+            temp = TemperatureSerializer(data={"packet_type": packet_type, "ident": id, "unit": unit})
+            if temp.is_valid():
+                temp.save()
+            else:
+                log.error("Unable to serialize temperature device")
 
-    if key == "RFX_DEVICE":
-        django_rfx.disconnect()
-        sleep(2)
-        django_rfx.connect(device=new_value)
+    elif isinstance(event, django_rfx.ControlEvent):
+        log.debug("Received control event {} - {}".format(event, event.device))
+    else:
+        log.debug("Received unknown event {}".format(event))
 
 
 class ApiConfig(AppConfig):
@@ -57,11 +65,6 @@ class ApiConfig(AppConfig):
             or environ.get("RFX2MQTT_SERVER_GATEWAY_INTERFACE") == "asgi"
         ):
             return
-
-        from constance import config
-
-        # mqtt_connect(host=config.MQTT_HOST, port=config.MQTT_PORT)
-        django_rfx.connect(device=config.RFX_DEVICE)
 
         return super().ready()
 
