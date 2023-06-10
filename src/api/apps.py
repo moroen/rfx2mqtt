@@ -17,6 +17,7 @@ from json import loads
 from os import environ
 from time import sleep
 
+
 log = logging.getLogger("api")
 
 # def parse_state_payload(payload) -> bool:
@@ -33,21 +34,47 @@ log = logging.getLogger("api")
 def get_device_id(msg: MQTTMessage):
     return msg.topic.split("/")[2]
 
+
 @django_rfx.callback()
-def callback(id, unit, event):
-    
+def callback(event):
     if isinstance(event, django_rfx.SensorEvent):
         log.debug("Received sensor event: {}".format(event))
         from .serializers import TemperatureSerializer
+
         packet_type = hex(event.device.packettype)
         device = event.device
+        values = event.values
+        ident, unit = device.id_string.split(":")
 
-        if packet_type == "0x52":  
-            temp = TemperatureSerializer(data={"packet_type": packet_type, "ident": id, "unit": unit})
-            if temp.is_valid():
-                temp.save()
-            else:
-                log.error("Unable to serialize temperature device")
+        print(event.values)
+
+        if packet_type == "0x52":
+            from .models import Device
+            from api.serializers import DevicePolymorphicSerializer
+
+            data = {
+                "packet_type": packet_type,
+                "ident": ident,
+                "unit": unit,
+                "temp": values["Temperature"],
+                "humidity": values["Humidity"],
+            }
+
+            try:
+                target = Device.objects.get(ident=ident, unit=unit)
+                data.update({"devicetype": target._meta.model_name.capitalize()})
+                temp = DevicePolymorphicSerializer(target, data=data)
+
+                if temp.is_valid():
+                    temp.save()
+                else:
+                    log.error("Unable to serialize temperature device for update")
+            except Device.DoesNotExist:
+                temp = TemperatureSerializer(data=data)
+                if temp.is_valid():
+                    temp.save()
+                else:
+                    log.error("Unable to serialize temperature device for create")
 
     elif isinstance(event, django_rfx.ControlEvent):
         log.debug("Received control event {} - {}".format(event, event.device))

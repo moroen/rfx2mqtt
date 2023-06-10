@@ -193,7 +193,9 @@ class Light(StateDevice):
 
 
 class Sensor(Device):
-    pass
+    def set_state(self, state=None):
+        log.debug("Sensors doesn´t do states")
+        pass
 
 
 class Temperature(Sensor):

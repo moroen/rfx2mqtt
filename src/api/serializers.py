@@ -45,6 +45,10 @@ class CustomSerializer(serializers.ModelSerializer):
         targetDevice.set_state()
         return targetDevice
 
+    def is_valid(self, *args, raise_exception=False):
+        print("Custom validator")
+        return super().is_valid(raise_exception=True)
+
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -94,13 +98,12 @@ class LightSerializer(CustomSerializer):
 
 
 class TemperatureSerializer(CustomSerializer):
-    def create(self, validated_data):
-        temp = super().create(validated_data)
-        return temp
-
     class Meta:
         model = Temperature
         fields = "__all__"
+
+    def is_valid(self, *args, raise_exception=False):
+        return super().is_valid(*args, raise_exception=raise_exception)
 
 
 class SensorPolymorphicSerializer(PolymorphicSerializer):
@@ -123,6 +126,9 @@ class DevicePolymorphicSerializer(PolymorphicSerializer):
                 "read_only": True
             }  # define the 'user' field as 'read-only'
         }
+
+    def is_valid(self, *args, **kwargs):
+        return super().is_valid(*args, raise_exception=True)
 
     def update(self, instance, validated_data):
         cType = instance.polymorphic_ctype
@@ -349,5 +355,3 @@ class ConfigSerializer(serializers.HyperlinkedModelSerializer):
 
     def get_value(self, obj):
         return getattr(config, obj.key, None)
-    
-
