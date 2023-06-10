@@ -100,6 +100,7 @@ CONSTANCE_CONFIG = {
 
 # MQTT
 MQTT_CONFIG = {"USE_CONSTANCE": True}
+RFX_CONFIG={"USE_CONSTANCE": True, "DEVICE": "/dev/ttyAMC1"}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases

@@ -91,7 +91,7 @@ class DevicesView(viewsets.ModelViewSet):
     #     return JsonResponse(retJson)
 
 
-class ConfigAPIView(viewsets.ReadOnlyModelViewSet):
+class ConfigAPIView(viewsets.ModelViewSet):
     serializer_class = ConfigSerializer
     queryset = Constance.objects.all()
 

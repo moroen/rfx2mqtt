@@ -45,6 +45,10 @@ class CustomSerializer(serializers.ModelSerializer):
         targetDevice.set_state()
         return targetDevice
 
+    def is_valid(self, *args, raise_exception=False):
+        print("Custom validator")
+        return super().is_valid(raise_exception=True)
+
 
 class RoomSerializer(serializers.ModelSerializer):
     class Meta:
@@ -94,14 +98,12 @@ class LightSerializer(CustomSerializer):
 
 
 class TemperatureSerializer(CustomSerializer):
-    def create(self, validated_data):
-        temp = super().create(validated_data)
-        temp.send_state()
-        return temp
-
     class Meta:
         model = Temperature
         fields = "__all__"
+
+    def is_valid(self, *args, raise_exception=False):
+        return super().is_valid(*args, raise_exception=raise_exception)
 
 
 class SensorPolymorphicSerializer(PolymorphicSerializer):
@@ -124,6 +126,9 @@ class DevicePolymorphicSerializer(PolymorphicSerializer):
                 "read_only": True
             }  # define the 'user' field as 'read-only'
         }
+
+    def is_valid(self, *args, **kwargs):
+        return super().is_valid(*args, raise_exception=True)
 
     def update(self, instance, validated_data):
         cType = instance.polymorphic_ctype
@@ -326,14 +331,19 @@ class DevicePolymorphicSerializer(PolymorphicSerializer):
 #         fields = ["id", "name", "devices"]
 
 
-class ConfigSerializer(serializers.ModelSerializer):
+class ConfigSerializer(serializers.HyperlinkedModelSerializer):
     default = serializers.SerializerMethodField()
     # help_text = serializers.SerializerMethodField()
     value = serializers.SerializerMethodField()
 
+    id = serializers.SerializerMethodField()
+
     class Meta:
         model = Constance
-        fields = ("key", "default", "value")
+        fields = ("id", "key", "default", "value")
+
+    def get_id(self, obj):
+        return obj.key
 
     def get_default(self, obj):
         default, _ = settings.CONSTANCE_CONFIG.get(obj.key)
