@@ -46,8 +46,6 @@ def callback(event):
         values = event.values
         ident, unit = device.id_string.split(":")
 
-        print(event.values)
-
         if packet_type == "0x52":
             from .models import Device
             from api.serializers import DevicePolymorphicSerializer
@@ -138,10 +136,10 @@ def on_connected(*args, **kwargs):
                 tDevice,
                 data=payload,
             )
-            print(ser)
+     
             if ser.is_valid():
                 ser.save()
             else:
-                print("Not valid")
+                log.error("on_set_message: Unable to serialize")
 
     send_device_configs()

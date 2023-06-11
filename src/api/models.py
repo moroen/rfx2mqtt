@@ -86,8 +86,6 @@ class Device(PolymorphicModel):
             log.error("send_state stateObj empty")
 
     def set_state(self, state: bool):
-        print(self.device_type)
-
         log.debug("Setting state for device {} to {}".format(self.id, state))
 
         if str(self.device_type).lower() == "switch":
