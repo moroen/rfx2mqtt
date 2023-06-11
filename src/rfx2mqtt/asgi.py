@@ -14,7 +14,7 @@ from channels.routing import ProtocolTypeRouter
 from channels.routing import URLRouter
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "rfx2mqtt.settings")
-os.environ.setdefault("RFX2MQTT_SERVER_GATEWAY_INTERFACE", "asgi")
+os.environ.setdefault("RUN_MAIN", "true")
 
 
 django_asgi_app = get_asgi_application()
