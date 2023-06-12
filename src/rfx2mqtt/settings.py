@@ -100,7 +100,7 @@ CONSTANCE_CONFIG = {
 
 # MQTT
 MQTT_CONFIG = {"USE_CONSTANCE": True}
-RFX_CONFIG={"USE_CONSTANCE": True, "DEVICE": "/dev/ttyAMC1"}
+RFX_CONFIG = {"USE_CONSTANCE": True, "DEVICE": "/dev/ttyAMC1"}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -163,6 +163,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Logging
 
+loglevel = os.environ.get("RFX_LOGLEVEL") if os.environ.get("RFX_LOGLEVEL") else "INFO"
 
 LOGGING = {
     "version": 1,
@@ -182,11 +183,11 @@ LOGGING = {
     },
     "loggers": {
         "django": {"handlers": ["console"], "level": "INFO", "propagate": False},
-        "mqtt": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
-        "daphne": {"handlers": ["console"], "level": "INFO", "propagate": False},
-        "asyncio": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
-        "api": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
-        "RFXtrx": {"handlers": ["console"], "level": "DEBUG", "propagate": False},
+        "mqtt": {"handlers": ["console"], "level": loglevel, "propagate": False},
+        "daphne": {"handlers": ["console"], "level": loglevel, "propagate": False},
+        "asyncio": {"handlers": ["console"], "level": loglevel, "propagate": False},
+        "api": {"handlers": ["console"], "level": loglevel, "propagate": False},
+        "RFXtrx": {"handlers": ["console"], "level": loglevel, "propagate": False},
     },
 }
 #     "filters": {
