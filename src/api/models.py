@@ -159,6 +159,9 @@ class Switch(StateDevice):
 
         return super().send_config_object(sub_config=cObj, config_type="Switch")
 
+    class Meta:
+        verbose_name_plural = "switches"
+
 
 class Light(StateDevice):
     mqtt_topic_type = "light"
