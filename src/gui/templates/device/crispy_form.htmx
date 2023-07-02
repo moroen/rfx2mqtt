@@ -1,0 +1,5 @@
+{% load crispy_forms_tags %}
+
+<h2>HTMX</h2>
+
+{% crispy form helper %}

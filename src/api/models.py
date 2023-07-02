@@ -68,6 +68,9 @@ class Device(PolymorphicModel):
     created = models.DateTimeField(auto_now_add=True)
     changed = models.DateTimeField(auto_now=True)
 
+    def get_absolute_url(self):
+        return f"/gui/devices/detail/{self.id}"
+
     def get_state_topic(self) -> str:
         return "{}/{}/{}/state".format(config.MQTT_TOPIC, self.mqtt_topic_type, self.id)
 

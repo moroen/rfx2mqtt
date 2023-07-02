@@ -1,0 +1,17 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Getting Started with Django and Webpack</title>
+    <link rel="stylesheet"
+          href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'gui/htmx.min.js' %}"></script>
+  </head>
+  <body hx-headers='{"X-CSRFToken": "{{ csrf_token }}"}'>
+    {% include "gui/navbar.html" %}
+    <div class="height-100 bg-light">
+      {% block contents %}{% endblock %}
+    </div>
+  </body>
+</html>

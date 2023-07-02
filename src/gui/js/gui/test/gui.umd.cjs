@@ -1,0 +1,1 @@
+(function(e){typeof define=="function"&&define.amd?define(e):e()})(function(){"use strict";function e(){const n=document.createElement("div");return n.innerHTML="Hello webpack",n}document.body.appendChild(e())});

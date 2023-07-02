@@ -11,7 +11,6 @@ from constance.backends.database.models import Constance
 from constance import config
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-
 from rfx2mqtt.log import get_log
 
 from json import loads
@@ -64,6 +63,9 @@ class DeviceSerializer(CustomSerializer):
 class SwitchSerializer(CustomSerializer):
     def update(self, instance, validated_data):
         log.debug("SwitchSerializer-update")
+
+        print(validated_data)
+
         if "state" in validated_data:
             state = validated_data["state"]
             # instance.set_state(state)
@@ -156,6 +158,7 @@ class DevicePolymorphicSerializer(PolymorphicSerializer):
             return newDev
         else:
             return super().update(instance, validated_data)
+
 
 class ConfigSerializer(serializers.HyperlinkedModelSerializer):
     default = serializers.SerializerMethodField()

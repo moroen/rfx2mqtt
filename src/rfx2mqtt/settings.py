@@ -16,7 +16,7 @@ import os
 from django.utils.log import ServerFormatter
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -32,8 +32,12 @@ ALLOWED_HOSTS = ["*"]
 # Application definition
 
 INSTALLED_APPS = [
+    "django_bootstrap5",
     "daphne",
     "polymorphic",
+    "extra_views",
+    "crispy_forms",
+    "crispy_bootstrap5",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -41,12 +45,16 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "django_tables2",
+    "django_htmx",
     "constance",
     "constance.backends.database",
     "api.apps.ApiConfig",
+    "gui",
     "django_mqtt",
     "django_rfx",
     "channels",
+    "drf_spectacular",
 ]
 
 MIDDLEWARE = [
@@ -58,14 +66,24 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "django_htmx.middleware.HtmxMiddleware",
 ]
+
+# Crispy-forms
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+REST_FRAMEWORK = {
+    # your other DRF settings here
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
 
 ROOT_URLCONF = "rfx2mqtt.urls"
 
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "rfx2mqtt/templates"],
+        "DIRS": [BASE_DIR / "src/templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -77,6 +95,8 @@ TEMPLATES = [
         },
     },
 ]
+
+print(TEMPLATES[0]["DIRS"])
 
 # Applications
 WSGI_APPLICATION = "rfx2mqtt.wsgi.application"
@@ -154,7 +174,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = "static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"
+# STATIC_ROOT = BASE_DIR / "staticfiles"
+
+# print(STATIC_ROOT)
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
@@ -183,10 +205,11 @@ LOGGING = {
     },
     "loggers": {
         "django": {"handlers": ["console"], "level": "INFO", "propagate": False},
-        "mqtt": {"handlers": ["console"], "level": loglevel, "propagate": False},
+        "mqtt": {"handlers": ["console"], "level": "INFO", "propagate": False},
         "daphne": {"handlers": ["console"], "level": loglevel, "propagate": False},
         "asyncio": {"handlers": ["console"], "level": loglevel, "propagate": False},
         "api": {"handlers": ["console"], "level": loglevel, "propagate": False},
+        "gui": {"handlers": ["console"], "level": loglevel, "propagate": False},
         "RFXtrx": {"handlers": ["console"], "level": loglevel, "propagate": False},
     },
 }
