@@ -1,0 +1,12 @@
+{% load static guitags %}
+<head>
+    {% bootstrap %}
+    {% htmx %}
+    {% hyperscript %}
+</head>
+<body>
+    {% include "gui/navbar.html" %}
+    {% block contents %}{% endblock %}
+    <h3>debug</h3>
+    {{ view|get_class_name }}
+</body>

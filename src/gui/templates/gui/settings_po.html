@@ -1,0 +1,45 @@
+{% extends "index.html" %}
+{% load static guitags %}
+{% block contents %}
+    <form method="post">
+        {% csrf_token %}
+        {{ form.version }}
+        <table class="table table-striped ms-3">
+            <thead>
+                <th>
+                    <div class="text">Name</div>
+                </th>
+                <th>
+                    <div class="text">Default</div>
+                </th>
+                <th>
+                    <div class="text">Value</div>
+                </th>
+            </thead>
+            {% for item in config %}
+                <tr>
+                    <td>
+                        <div>{{ item.name }}</div>
+                        <div class="text-muted small">{{ item.help_text }}</div>
+                    </td>
+                    <td>{{ item.default }}</td>
+                    <td>
+                        {{ item.form_field.errors }}
+                        <div>{{ item.form_field }}</div>
+                        <a href="#"
+                           _="on click halt the event set value of the #{{ item.form_field.auto_id }} to '{{ item.default }}'">
+                            Reset to default
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+        <input type="submit"
+               name="submit"
+               value="Save"
+               class="btn btn-primary btn-primary"
+               id="submit-id-submit" />
+    </form>
+    {{ config }}
+    {{ form }}
+{% endblock %}

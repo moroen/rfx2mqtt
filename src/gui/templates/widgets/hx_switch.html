@@ -1,0 +1,12 @@
+<div class="form-check form-switch">
+    <input hx-put="{{ target }}/"
+           name="state"
+           value="true"
+           id="{{ id }}"
+           hx-swap="none"
+           class="form-check-input"
+           autocomplete="off"
+           type="checkbox"
+           {% if state == True %}checked{% endif %}>
+</input>
+</div>
