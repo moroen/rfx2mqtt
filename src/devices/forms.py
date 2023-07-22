@@ -1,5 +1,16 @@
+from typing import Any, Mapping, Optional, Type, Union
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Div, Submit, HTML, Button, Row, Field, Column
+from crispy_forms.layout import (
+    Layout,
+    Div,
+    Submit,
+    HTML,
+    Button,
+    Row,
+    Field,
+    Column,
+    Hidden,
+)
 
 # from crispy_forms.bootstrap import AppendedText, PrependedText, FormActions, InlineField
 from crispy_bootstrap5.bootstrap5 import FloatingField
@@ -25,8 +36,10 @@ class DefaultFormHelper(FormHelper):
         else:
             return ()
 
-    def __init__(self, form=None, form_mode=None):
+    def __init__(self, form=None, form_mode=None, devicetype=None):
         super().__init__(form)
+
+        print("Helper", devicetype)
 
         self.form_method = "post"
         self.form_class = "m-3"
@@ -79,10 +92,36 @@ class DefaultFormHelper(FormHelper):
         if form_mode == "update":
             button_layout = Layout(
                 Row(
-                    Column(Submit(name="Submit", value="Save", css_class="btn-primary"))
+                    Column(
+                        Submit(name="Submit", value="Save", css_class="btn-primary")
+                    ),
+                    Column(
+                        HTML(
+                            '<button hx-get="{% url \'device-delete\' pk=object.id%}" hx-target="#modals-here" hx-trigger="click" _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop" class="btn btn-danger">Delete</button>'
+                        )
+                    ),
+                )
+            )
+        elif form_mode == "add":
+            button_layout = Layout(
+                Row(
+                    Column(
+                        Submit(name="Submit", value="Save", css_class="btn-primary")
+                    ),
+                    Column(
+                        HTML(
+                            '<button hx-get="{% url \'device-list\' %}" hx-target="#whole" hx-trigger="click" _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop" class="btn btn-danger">Cancel</button>'
+                        )
+                    ),
                 )
             )
         else:
             button_layout = Layout()
+
+        if devicetype is not None:
+            print("Helper 2", devicetype)
+            fields_layout = Layout(
+                Hidden("devicetype", value=devicetype), fields_layout
+            )
 
         self.layout = Layout(fields_layout, state_layout, temp_layout, button_layout)

@@ -26,10 +26,22 @@
                     <td>
                         {{ item.form_field.errors }}
                         <div>{{ item.form_field }}</div>
-                        <a href="#"
-                           _="on click halt the event set value of the #{{ item.form_field.auto_id }} to '{{ item.default }}'">
-                            Reset to default
-                        </a>
+                        <div class="small">
+                            {% if item.is_checkbox %}
+                                <input type="hidden"
+                                       id="{{ item.form_field.auto_id }}_default"
+                                       value="{{ item.default }}">
+                                <a href="#"
+                                   _="on click if #{{ item.form_field.auto_id }}_default.value == 'True' then add @checked to #{{ item.form_field.auto_id }} else remove @checked from #{{ item.form_field.auto_id }}">
+                                    Reset to default
+                                </a>
+                            {% else %}
+                                <a href="#"
+                                   _="on click halt the event set value of the #{{ item.form_field.auto_id }} to '{{ item.default }}'">
+                                    Reset to default
+                                </a>
+                            {% endif %}
+                        </div>
                     </td>
                 </tr>
             {% endfor %}
@@ -37,9 +49,10 @@
         <input type="submit"
                name="submit"
                value="Save"
-               class="btn btn-primary btn-primary"
+               class="btn btn-primary btn-primary ms-4"
                id="submit-id-submit" />
     </form>
     {{ config }}
+    <hr>
     {{ form }}
 {% endblock %}

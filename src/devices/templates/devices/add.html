@@ -1,0 +1,20 @@
+{% extends "index.html" %}
+{% block contents %}
+    <form action="{% url 'device-add' %}" method="get">
+        <div class="row mb-3">
+            <label for="devicetype" class="col-sm-2 col-form-label">Devicetype:</label>
+            <div class="col-sm-10">
+                <select class="form-select"
+                        id="devicetype"
+                        name="devicetype"
+                        style="width:auto"
+                        hx-get="{% url 'device-add' %}"
+                        hx-target="#deviceform">
+                    <option value="switch">Switch</option>
+                    <option value="light">Light</option>
+                </select>
+            </div>
+        </div>
+    </form>
+    <div id="deviceform">{% include "widgets/crispy_form.html" %}</div>
+{% endblock %}

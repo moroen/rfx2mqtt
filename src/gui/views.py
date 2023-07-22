@@ -25,6 +25,8 @@ from django.views.generic.edit import FormView
 from constance import settings, LazyConfig
 from constance.admin import ConstanceForm
 
+from .forms import SettingsForm
+
 
 class Main(TemplateView):
     template_name = "index.html"
@@ -45,65 +47,78 @@ class SettingsFormHelper(FormHelper):
 config = LazyConfig()
 
 
-class ConstanceConfigView(FormView):
-    form_class = ConstanceForm
+class SettingsView(FormView):
+    form_class = SettingsForm
     template_name = "gui/settings.html"
     success_url = reverse_lazy("device-list")
 
-    def __init__(self, *args, **kwargs):
-        if "fields" in kwargs:
-            self.fields = kwargs.pop("fields")
-        else:
-            self.fields = settings.CONFIG.keys()
-        super(ConstanceConfigView, self).__init__(*args, **kwargs)
+    def __init__(self, **kwargs: Any) -> None:
+        super().__init__(**kwargs)
 
-    def get_context_data(self, **kwargs):
-        context = super(ConstanceConfigView, self).get_context_data(**kwargs)
-        context["helper"] = SettingsFormHelper()
-        context["config"] = []
-        form_class = self.get_form_class()
-        form = self.get_form(form_class)
-        initial = self.get_initial()
-        for name, (default, help_text) in settings.CONFIG.items():
-            value = initial.get(name)
-            if value is None:
-                value = getattr(config, name)
-            context["config"].append(
-                {
-                    "name": name,
-                    "default": localize(default),
-                    "help_text": localize(help_text),
-                    "value": localize(value),
-                    "modified": value != default,
-                    "form_field": form[name],
-                    "is_checkbox": isinstance(value, bool),
-                }
-            )
-        context["config"].sort(key=itemgetter("name"))
-        return context
-
-    def get_initial(self):
-        data = super(ConstanceConfigView, self).get_initial()
-        default_initial = (
-            (name, default)
-            for name, (default, help_text) in settings.CONFIG.items()
-            if name in self.fields
-        )
-        initial = dict(
-            default_initial,
-            **dict(
-                config._backend.mget(
-                    [k for k in settings.CONFIG.keys() if k in self.fields]
-                )
-            )
-        )
-        data.update(initial)
-        return data
-
-    def form_valid(self, form):
-        print(form)
+    def form_valid(self, form: Any) -> HttpResponse:
         form.save()
-        return super(ConstanceConfigView, self).form_valid(form)
+        return super().form_valid(form)
+
+
+# class ConstanceConfigView(FormView):
+#     form_class = ConstanceForm
+#     template_name = "gui/settings.html"
+#     success_url = reverse_lazy("device-list")
+
+#     def __init__(self, *args, **kwargs):
+#         if "fields" in kwargs:
+#             self.fields = kwargs.pop("fields")
+#         else:
+#             self.fields = settings.CONFIG.keys()
+#         super(ConstanceConfigView, self).__init__(*args, **kwargs)
+
+#     def get_context_data(self, **kwargs):
+#         context = super(ConstanceConfigView, self).get_context_data(**kwargs)
+#         context["helper"] = SettingsFormHelper()
+#         context["config"] = []
+#         form_class = self.get_form_class()
+#         form = self.get_form(form_class)
+#         initial = self.get_initial()
+#         for name, (default, help_text) in settings.CONFIG.items():
+#             value = initial.get(name)
+#             if value is None:
+#                 value = getattr(config, name)
+#             context["config"].append(
+#                 {
+#                     "name": name,
+#                     "default": localize(default),
+#                     "help_text": localize(help_text),
+#                     "value": localize(value),
+#                     "modified": value != default,
+#                     "form_field": form[name],
+#                     "is_checkbox": isinstance(value, bool),
+#                 }
+#             )
+#         context["config"].sort(key=itemgetter("name"))
+#         return context
+
+#     def get_initial(self):
+#         data = super(ConstanceConfigView, self).get_initial()
+#         default_initial = (
+#             (name, default)
+#             for name, (default, help_text) in settings.CONFIG.items()
+#             if name in self.fields
+#         )
+#         initial = dict(
+#             default_initial,
+#             **dict(
+#                 config._backend.mget(
+#                     [k for k in settings.CONFIG.keys() if k in self.fields]
+#                 )
+#             )
+#         )
+#         data.update(initial)
+#         return data
+
+#     def form_valid(self, form):
+#         print(form)
+#         form.save()
+#         return super(ConstanceConfigView, self).form_valid(form)
 
 
 def get_setting(request):
