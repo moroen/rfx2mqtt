@@ -3,6 +3,8 @@ from devices.models import Device, Light, Switch, Temperature
 from django.template.loader import render_to_string
 from django.utils.html import format_html
 
+from django.urls import reverse_lazy
+
 
 class DeviceListTable(Table):
     id = tables.columns.TemplateColumn(template_code="{{record.id}}")
@@ -23,7 +25,9 @@ class DeviceListTable(Table):
                 context={
                     "id": record.id,
                     "state": record.state,
-                    "target": f"api/switch/{record.id}",
+                    "target": reverse_lazy(
+                        "API:Device-detail", kwargs={"pk": record.id}
+                    ),
                 },
             )
         elif isinstance(record, Temperature):

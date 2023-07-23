@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "constance",
     "constance.backends.database",
+    "rest_framework",
     "django_htmx",
     "crispy_forms",
     "crispy_bootstrap5",
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     "django_rfx",
     "rooms",
     "devices",
+    "api",
     "gui",
 ]
 

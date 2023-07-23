@@ -23,4 +23,5 @@ urlpatterns = [
     path("", DeviceList.as_view(), name="index"),
     path("gui/", include("gui.urls")),
     path("devices/", include("devices.urls")),
+    path("api/", include("api.urls", "API")),
 ]

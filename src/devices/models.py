@@ -42,6 +42,8 @@ class Device(models.Model):
         return reverse("device-detail", kwargs={"pk": self.id})
 
     def set_state(self, state: bool = None, brightness: int = None) -> bool:
+        state = self.state if state is None else state
+
         log.debug(
             "Setting state to {} for device {}:{} with packet_type {}".format(
                 state, self.ident, self.unit, self.packet_type_id
