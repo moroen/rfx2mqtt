@@ -1,0 +1,24 @@
+<head>
+    {% load guitags %}
+    {% bootstrap %}
+    {% htmx %}
+    {% gui %}
+</head>
+<body>
+    <div id="modal-backdrop"
+         class="modal-backdrop fade show"
+         style="display:block"></div>
+    <div id="modal"
+         class="modal fade show"
+         tabindex="-1"
+         style="display:block">
+        <div class="modal-dialog modal-dialog-centered {{ modal_extra_css }}">
+            <div class="modal-content">
+                <div class="m-1">
+                    <div class="h2 m-2">{{ title }}</div>
+                    <div id="form_contents">{% include "widgets/crispy_form.html" %}</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>

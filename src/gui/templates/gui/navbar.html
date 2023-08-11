@@ -7,11 +7,11 @@
                 <li class="nav-item">
                     <a class="nav-link {% if view|get_class_name == 'devicelist' %}active{% endif %}"
                        aria-current="page"
-                       href="{% url 'device-list' %}">Devices</a>
+                       href="{% url 'DEVICES:list' %}">Devices</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {% if current_page == 'rooms' %}active{% endif %}"
-                       href="#">Rooms</a>
+                    <a class="nav-link {% if view|get_class_name == 'roomlist' %}active{% endif %}"
+                       href="{% url 'ROOMS:list' %}">Rooms</a>
                 </li>
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle"
@@ -22,13 +22,13 @@
                        aria-expanded="false">Actions</a>
                     <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                         <li>
-                            <a class="dropdown-item" href="{% url 'device-add' %}">Add</a>
+                            <a class="dropdown-item" href="{% url 'DEVICES:add' %}">Add</a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="#">Another action</a>
                         </li>
                         <li>
-                            <a class="dropdown-item" href="#">Something else here</a>
+                            <a class="dropdown-item" href="{% url 'API:api-root' %}">API</a>
                         </li>
                         <li>
                             <hr class="dropdown-divider">

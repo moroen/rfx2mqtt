@@ -33,6 +33,11 @@ def hyperscript():
     )
 
 
+@register.simple_tag
+def gui():
+    return format_html(f'<script src="{settings.STATIC_URL}gui/gui.js"></script>')
+
+
 @register.filter
 def get_class_name(value):
     return value.__class__.__name__.lower()

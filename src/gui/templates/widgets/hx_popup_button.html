@@ -1,0 +1,7 @@
+<button hx-get="{{ target }}"
+        class="btn {% if button_class %} {{ button_class }} {% else %}btn-primary{% endif %}"
+        hx-target="#modals-here"
+        hx-trigger="click"
+        _="on htmx:afterOnLoad wait 10ms then add .show to #modal then add .show to #modal-backdrop">
+    {{ label }}
+</button>

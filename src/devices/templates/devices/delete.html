@@ -1,49 +1,16 @@
-<head>
-    {% load guitags %}
-    {% bootstrap %}
-    {% htmx %}
-    <div></div>
-</head>
-<script>
-    function closeModal() {
-        var container = document.getElementById("modals-here")
-        var backdrop = document.getElementById("modal-backdrop")
-        var modal = document.getElementById("modal")
-
-        modal.classList.remove("show")
-        backdrop.classList.remove("show")
-
-        setTimeout(function () {
-            container.removeChild(backdrop)
-            container.removeChild(modal)
-        }, 200)
-    }
-
-</script>
-<body>
-    <div id="modal-backdrop"
-         class="modal-backdrop fade show"
-         style="display:block"></div>
-    <div id="modal"
-         class="modal fade show"
-         tabindex="-1"
-         style="display:block">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <form method="post" action="{% url 'device-delete' pk=object.id %}">
-                    {% csrf_token %}
-                    <div class="modal-header">
-                        <h5 class="modal-title">Delete device?</h5>
-                    </div>
-                    <div class="modal-body">
-                        <p>Are you sure you want to delete "{{ object }}"?</p>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="submit" value="Confirm" class="btn btn-primary">
-                        <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
-                    </div>
-                </form>
-            </div>
+{% extends "gui/modal.html" %}
+{% block modal_contents %}
+    <form method="post" action="{% url 'DEVICES:delete' pk=object.id %}">
+        {% csrf_token %}
+        <div class="modal-header">
+            <h5 class="modal-title">Delete device?</h5>
         </div>
-    </div>
-</body>
+        <div class="modal-body">
+            <p>Are you sure you want to delete "{{ object }}"?</p>
+        </div>
+        <div class="modal-footer">
+            <input type="submit" value="Confirm" class="btn btn-primary">
+            <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        </div>
+    </form>
+{% endblock %}

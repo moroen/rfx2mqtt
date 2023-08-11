@@ -50,7 +50,7 @@ config = LazyConfig()
 class SettingsView(FormView):
     form_class = SettingsForm
     template_name = "gui/settings.html"
-    success_url = reverse_lazy("device-list")
+    success_url = reverse_lazy("DEVICES:list")
 
     def __init__(self, **kwargs: Any) -> None:
         super().__init__(**kwargs)

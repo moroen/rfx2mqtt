@@ -5,10 +5,13 @@
         {% bootstrap %}
         {% htmx %}
         {% hyperscript %}
+        {% gui %}
     </head>
     <body id="whole">
-        {% include "gui/navbar.html" %}
+        <div>{% include "gui/navbar.html" %}</div>
+        <div>{% include "widgets/functionbar.html" %}</div>
         {% block contents %}{% endblock %}
+        <div id="modals-here"></div>
         <h3>debug</h3>
         {{ view|get_class_name }}
     </body>

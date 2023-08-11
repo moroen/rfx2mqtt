@@ -1,0 +1,7 @@
+{% extends "gui/modal.html" %}
+{% block modal_contents %}
+    <div class="m-1">
+        <div class="h2 m-2">{{ title }}</div>
+        <div id="form_contents">{% include "widgets/crispy_form.html" %}</div>
+    </div>
+{% endblock %}

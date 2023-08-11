@@ -45,11 +45,12 @@ INSTALLED_APPS = [
     "crispy_forms",
     "crispy_bootstrap5",
     "django_tables2",
-    "django_rfx",
     "rooms",
     "devices",
     "api",
     "gui",
+    "django_rfx",
+    "django_mqtt",
 ]
 
 MIDDLEWARE = [
