@@ -43,15 +43,16 @@ class DevicesConfig(AppConfig):
             dev = get_device_id(msg)
             payload = loads(msg.payload)
 
-            target = Device.objects.get_subclass(id=dev)
-            ser = DeviceSerializer(target, data=payload)
+            try:
+                target = Device.objects.get_subclass(id=dev)
+                ser = DeviceSerializer(target, data=payload)
 
-            print(ser.initial_data)
-
-            if ser.is_valid():
-                ser.save()
-            else:
-                log.error("on_set_message: Unable to serialize")
+                if ser.is_valid():
+                    ser.save()
+                else:
+                    log.error("on_set_message: Unable to serialize")
+            except Device.DoesNotExist:
+                log.error(f"No device with id {dev}")
 
         @django_rfx.callback()
         def callback(event):
