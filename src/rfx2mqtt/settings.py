@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django_filters",
     "constance",
     "constance.backends.database",
     "rest_framework",
@@ -51,6 +52,7 @@ INSTALLED_APPS = [
     "gui",
     "django_rfx",
     "django_mqtt",
+    "django_collapsible_table",
 ]
 
 MIDDLEWARE = [

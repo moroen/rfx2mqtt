@@ -41,3 +41,10 @@ def gui():
 @register.filter
 def get_class_name(value):
     return value.__class__.__name__.lower()
+
+
+@register.simple_tag
+def global_css():
+    return format_html(
+        f'<link rel="stylesheet" href="{settings.STATIC_URL}styles/main.css">'
+    )

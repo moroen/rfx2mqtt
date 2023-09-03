@@ -13,37 +13,61 @@ from django.apps import apps
 
 from django.views.generic import TemplateView, UpdateView, DeleteView, CreateView
 from django_tables2 import SingleTableView
-from .tables import DeviceListTable
 from .forms import DeviceFormHelper
 
 from devices.models import Device
 
+from django_tables2.views import SingleTableMixin
+from django_filters.views import FilterView
 
-class DeviceList(SingleTableView):
-    model = Device
-    template_name = "gui/list.html"
-    table_class = DeviceListTable
+from gui.common import FilterBoxMixin, AddButtonMixin
 
-    def get_context_data(self, **kwargs: Any) -> Dict[str, Any]:
-        context = super().get_context_data(**kwargs)
-        context.update(
-            {
-                "functionbar_left": "L",
-                "functionbar_center": "C",
-                "functionbar_right": render_to_string(
-                    "widgets/hx_popup_button.html",
-                    {
-                        "label": "Add",
-                        "target": "/devices/add",
-                        "button_class": "btn-secondary",
-                    },
-                ),
-            }
-        )
-        return context
+from django_collapsible_table import CollapsibleTable, CollapsibleTableView
+
+from .tables import DevicesFilter, DevicesTable
+
+
+class DeviceListView(FilterBoxMixin, AddButtonMixin, CollapsibleTableView):
+    template_name = "gui/table.html"
+    table_class = DevicesTable
+    filterset_class = DevicesFilter
+
+    add_button_label = "Add"
+    add_button_target = "/devices/add"
+    add_button_class = "btn-secondary"
 
     def get_queryset(self) -> QuerySet[Any]:
         return Device.objects.all().select_subclasses()
+
+
+# class DeviceListView(FilterBoxMixin, AddButtonMixin, SingleTableMixin, FilterView):
+#     table_class = DeviceListTable
+#     model = Device
+#     template_name = "gui/list.html"
+#     filterset_class = DevicesFilter
+
+#     add_button_label = "Add"
+#     add_button_target = "/devices/add"
+#     add_button_class = "btn-secondary"
+
+#     exclude = None
+
+#     def get_table_kwargs(self):
+#         return {"exclude": (self.exclude)}
+
+#     def get_queryset(self) -> QuerySet[Any]:
+#         return Device.objects.all().select_subclasses()
+
+#     def get(self, request, *args, **kwargs):
+#         if "exclude" in request.GET:
+#             self.exclude = request.GET["exclude"]
+
+#         if request.htmx:
+#             self.template_name = "widgets/table.html"
+#         else:
+#             self.template_name = "gui/list.html"
+
+#         return super().get(request, *args, **kwargs)
 
 
 class DeviceAddView(CreateView):

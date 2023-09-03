@@ -17,10 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from devices.views import DeviceList
+from devices.views import DeviceListView
 
 urlpatterns = [
-    path("", DeviceList.as_view(), name="index"),
+    path("", DeviceListView.as_view(), name="index"),
     path("gui/", include("gui.urls")),
     path("devices/", include("devices.urls", "DEVICES")),
     path("rooms/", include("rooms.urls", "ROOMS")),

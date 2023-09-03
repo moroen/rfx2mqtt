@@ -1,4 +1,4 @@
-{% load static guitags %}
+{% load static guitags collapsible_table %}
 <!DOCTYPE html>
 <html>
     <head>
@@ -6,13 +6,13 @@
         {% htmx %}
         {% hyperscript %}
         {% gui %}
+        {% material_icons %}
+        {% global_css %}
     </head>
     <body id="whole">
         <div>{% include "gui/navbar.html" %}</div>
         <div>{% include "widgets/functionbar.html" %}</div>
         {% block contents %}{% endblock %}
         <div id="modals-here"></div>
-        <h3>debug</h3>
-        {{ view|get_class_name }}
     </body>
 </html>

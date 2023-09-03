@@ -119,7 +119,7 @@ class Switch(Device):
         stateObj = {"state": self.state}
         return super().mqtt_send_state(stateObj)
 
-    def render_widget(self):
+    def render_state(self):
         return render_to_string(
             "widgets/hx_switch.html",
             context={
@@ -158,6 +158,9 @@ class Light(Device):
         }
         return super().mqtt_send_config_object(cObj)
 
+    def render_state(self):
+        return render_to_string("widgets/hx_slider.html")
+
 
 class Sensor(Device):
     def set_state(self, state: bool = None, brightness: int = None) -> bool:
@@ -172,7 +175,7 @@ class Temperature(Sensor):
 
     mqtt_topic_type = "sensor"
 
-    def render_widget(self):
+    def render_state(self):
         return render_to_string(
             "widgets/temp_hum.html",
             context={"temperature": self.temp, "humidity": self.humidity},
