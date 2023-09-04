@@ -47,11 +47,14 @@ class DevicesTable(CollapsibleTable):
         {"name": "Ident", "header_css_class": "col-1"},
         {"name": "Unit", "header_css_class": "col-1"},
         {"name": "Room", "header_css_class": "col-2"},
-        {"name": "State", "header_css_class": "col-4"},
+        {"name": "State", "header_css_class": "col-4", "sortable": False},
     ]
 
     def get_queryset(self) -> QuerySet[Any]:
         return Device.objects.all().select_subclasses()
+
+    def sort_room(self, queryset: QuerySet):
+        return queryset.order_by("room__name")
 
 
 # class DeviceListTable(Table):
