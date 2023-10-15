@@ -2,11 +2,15 @@
 <!DOCTYPE html>
 <html>
     <head>
-        {% bootstrap %}
         {% htmx %}
+        <link rel="stylesheet"
+              href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <script type="text/hyperscript" src="{% static 'collapse/collapse._hs' %}"></script>
+        <link rel="stylesheet" href="{% static 'collapse/collapse.css' %}">
         {% hyperscript %}
         {% gui %}
         {% bootstrap_icons %}
+        {% collapsible_css %}
         {% global_css %}
     </head>
     <body id="whole">

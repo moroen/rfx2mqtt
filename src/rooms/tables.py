@@ -1,12 +1,15 @@
-from django_tables2 import Table, tables
-from django.urls import reverse_lazy
-
+from .models import Room
+from django_collapsible_table import hx_table, CollapsibleTable
 from django_filters import FilterSet, CharFilter
-
+from django_tables2 import Table, tables
 from django.db.models import Q
+from django.db.models.query import QuerySet
 from django.template.loader import render_to_string
-
+from django.urls import reverse_lazy
 from django.utils.html import format_html
+from typing import Any, Dict
+
+from devices.tables import DevicesTable
 
 
 class RoomsFilter(FilterSet):
@@ -20,32 +23,24 @@ class RoomsFilter(FilterSet):
         return queryset.filter(Q(name__icontains=value))
 
 
-class RoomListTable(Table):
-    id = tables.columns.TemplateColumn(
-        template_code="{{record.id}}", attrs={"th": {"class": "col-1"}}
-    )
-    name = tables.columns.TemplateColumn(
-        template_code="{{record.name}}", attrs={"th": {"class": "col-3"}}, linkify=True
-    )
+@hx_table
+class DevicesByRoomTable(DevicesTable):
+    foreign_key = "room"
+    pass
 
-    detail = tables.columns.BooleanColumn(verbose_name="")
 
-    child = tables.columns.ManyToManyColumn(transform=lambda room: r.name)
+@hx_table
+class RoomsTable(CollapsibleTable):
+    fields = [{"name": "Id", "width": 1}, "name"]
 
-    class Meta:
-        fields = ["id", "name", "child"]
-        template_name = "widgets/table_bs5.html"
-        attrs = {"class": "table table-striped"}
+    child_table_class = DevicesByRoomTable
+    filtersset_class = RoomsFilter
+    template_name = "rooms/list.html"
 
-    def render_name(self, record):
-        return render_to_string(
-            "widgets/hx_link.html",
-            context={
-                "target": "#modals-here",
-                "url": record.get_absolute_url(),
-                "label": record.name,
-            },
-        )
+    key = "id"
 
-    def render_detail(self, record):
+    def get_queryset(self) -> QuerySet[Any]:
+        return Room.objects.all()
+
+    def get_child_queryset(self, record) -> QuerySet[Any]:
         return record.devices.all().select_subclasses()

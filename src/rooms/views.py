@@ -4,12 +4,12 @@ from django.http import HttpRequest, HttpResponse
 from django.shortcuts import render
 from django.template.loader import render_to_string
 from django_tables2 import SingleTableView
-from django.db.models.query import QuerySet
+
 from django.views.generic import CreateView, UpdateView, TemplateView
 from django.urls import reverse_lazy
 from django.forms import modelform_factory
 
-from django_collapsible_table import CollapsibleTable, CollapsibleTableView
+from django_collapsible_table import CollapsibleTable, CollapsibleTableView, hx_table
 
 # Create your views here.
 from .models import Room
@@ -44,63 +44,20 @@ log = getLogger(__name__)
 from django_filters import FilterSet, CharFilter, NumberFilter
 from django.db.models import Q
 
+from gui.common import AddButtonMixin
 
-class DevicesFilter(FilterSet):
-    q = CharFilter(method="my_custom_filter", label="Search")
-    room = NumberFilter(method="room_filter")
-
-    class Meta:
-        # model = Device
-        fields = ["q", "room"]
-
-    def my_custom_filter(self, queryset, name, value):
-        return queryset.filter(
-            Q(name__icontains=value)
-            | Q(room__name__icontains=value)
-            | Q(ident__icontains=value)
-        )
-
-    def room_filter(self, queryset, name, value):
-        return queryset.filter(room=value)
+from .tables import RoomsFilter, RoomsTable
 
 
-class DeviceTable(CollapsibleTable):
-    table_css_class = "table table-striped w-auto small"
-
-    fields = [
-        {"name": "Id", "header_css_class": "table-primary col-1"},
-        {"name": "Name", "header_css_class": "col-3"},
-        {"name": "Ident", "header_css_class": "col-1"},
-        {"name": "Unit", "header_css_class": "col-1"},
-        {"name": "State", "header_css_class": "col-6"},
-    ]
-
-    def get_queryset(self) -> QuerySet[Any]:
-        return Device.objects.all().select_subclasses()
-
-    # def render_state(self, record):
-    # a   return record.id
-
-
-class RoomsTable(CollapsibleTable):
-    fields = [{"name": "Id", "header_css_class": "col-1"}, "name"]
-    child_table_class = DeviceTable
-
-    table_css_class = "table table-striped"
-
-    def get_queryset(self) -> QuerySet[Any]:
-        return Room.objects.all()
-
-    def get_child_queryset(self, record) -> QuerySet[Any]:
-        qs = record.devices.all().select_subclasses()
-        return qs
-
-
-class RoomListView(FilterBoxMixin, CollapsibleTableView):
-    template_name = "rooms/list.html"
+class RoomListView(FilterBoxMixin, AddButtonMixin, CollapsibleTableView):
+    template_name = "gui/table.html"
     model = Room
     table_class = RoomsTable
-    filterset_class = DevicesFilter
+    filterset_class = RoomsFilter
+
+    add_button_label = "Add"
+    add_button_target = "/rooms/add"
+    add_button_class = "btn-secondary"
 
 
 # class TestView(TemplateView):

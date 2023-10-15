@@ -27,6 +27,21 @@ from constance.admin import ConstanceForm
 
 from .forms import SettingsForm
 
+from django_collapsible_table import hx_table_view, CollapsibleTable
+
+
+from devices.tables import DevicesTable
+
+
+def TestTable(CollapsibleTable):
+    pass
+
+
+# class hx_table(hx_table_view):
+#    tables = {
+#        "Devices": DevicesTable,
+#    }
+
 
 class Main(TemplateView):
     template_name = "index.html"
@@ -45,6 +60,10 @@ class SettingsFormHelper(FormHelper):
 
 
 config = LazyConfig()
+
+
+class TestView(TemplateView):
+    template_name = "test.html"
 
 
 class SettingsView(FormView):

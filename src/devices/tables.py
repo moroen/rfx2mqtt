@@ -12,7 +12,7 @@ from django.urls import reverse_lazy
 
 from django.db.models import Q
 
-from django_collapsible_table import CollapsibleTable
+from django_collapsible_table import CollapsibleTable, hx_table
 
 from typing import Any, Dict
 
@@ -38,62 +38,29 @@ class DevicesFilter(FilterSet):
         return queryset.filter(room=value)
 
 
+@hx_table
 class DevicesTable(CollapsibleTable):
-    table_css_class = "table table-striped w-auto small"
+    table_css_class = "table  w-auto small"
+    filterset_class = DevicesFilter
+    template_name = "rooms/list.html"
 
     fields = [
-        {"name": "Id", "header_css_class": "col-1"},
-        {"name": "Name", "header_css_class": "col-3"},
-        {"name": "Ident", "header_css_class": "col-1"},
-        {"name": "Unit", "header_css_class": "col-1"},
-        {"name": "Room", "header_css_class": "col-2"},
-        {"name": "State", "header_css_class": "col-4", "sortable": False},
+        {"name": "Id", "width": 1},
+        {"name": "Name", "width": 2},
+        {"name": "Ident", "width": 1},
+        {"name": "Unit", "width": 1},
+        {"name": "Room", "width": 1},
+        {"name": "State", "width": 2, "sortable": False},
     ]
+
+    key = "id"
+    foreign_key = "room"
 
     def get_queryset(self) -> QuerySet[Any]:
         return Device.objects.all().select_subclasses()
 
-    def sort_room(self, queryset: QuerySet):
-        return queryset.order_by("room__name")
-
-
-# class DeviceListTable(Table):
-#     id = tables.columns.TemplateColumn(
-#         template_code="{{record.id}}", attrs={"th": {"class": "col-1"}}
-#     )
-#     name = tables.columns.TemplateColumn(
-#         template_code="{{record.name}}", attrs={"th": {"class": "col-3"}}
-#     )
-#     ident = tables.columns.TemplateColumn(
-#         template_code="{{record.ident}}", attrs={"th": {"class": "col-1"}}
-#     )
-
-#     unit = tables.columns.TemplateColumn(
-#         template_code="{{record.unit}}", attrs={"th": {"class": "col-1"}}
-#     )
-#     room = tables.columns.TemplateColumn(
-#         template_code="{{record.room}}", attrs={"th": {"class": "col-2"}}
-#     )
-
-#     state = tables.columns.BooleanColumn()
-
-#     def __init__(self, *args, **kwargs):
-#         super().__init__(*args, **kwargs)
-
-#     class Meta:
-#         fields = ["id", "name", "ident", "unit", "room", "state"]
-#         template_name = "django_tables2/bootstrap5.html"
-#         attrs = {"class": "table table-striped"}
-
-#     def render_state(self, record):
-#         return record.render_widget()
-
-#     def render_name(self, record):
-#         return render_to_string(
-#             "widgets/hx_link.html",
-#             context={
-#                 "target": "#modals-here",
-#                 "url": record.get_absolute_url(),
-#                 "label": record.name,
-#             },
-#         )
+    def sort_room(self, queryset: QuerySet, order=None):
+        if order == "desc":
+            return queryset.order_by("room__name").reverse()
+        else:
+            return queryset.order_by("room__name")
