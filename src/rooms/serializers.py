@@ -1,9 +1,7 @@
-from rest_framework import serializers
-
 from django.apps import apps
+from .models import Room
 
-from .models import Temperature, Device, Switch
-from rooms.models import Room
+from rest_framework import serializers
 
 
 def modelserializer_factory(
@@ -38,51 +36,24 @@ class InheritedModelSerializerMixin:
             model, self.__class__.__name__, meta_cls=self.Meta
         )
 
-        retVal = serializer(instance=instance).data
-
-        if "room" in retVal:
-            tRoom = Room.objects.get(id=retVal.get("room"))
-            retVal.update({"room_name": tRoom.__str__()})
-
-        retVal.update({"devicetype": instance.__class__.__name__})
-
-        return retVal
+        return serializer(instance=instance).data
 
     def to_internal_value(self, data):
         if self.instance is not None:
-            self.Meta.model = apps.get_model(
-                "devices", self.instance.__class__.__name__
-            )
-
+            self.Meta.model = apps.get_model("rooms", self.instance.__class__.__name__)
         return super().to_internal_value(data)
 
     def create(self, validated_data):
         return super().create(validated_data)
 
     def update(self, instance, validated_data):
-        target: Device = super().update(instance, validated_data)
-        target.set_state()
-        target.mqtt_send_state()
+        target: Room = super().update(instance, validated_data)
+        # target.set_state()
+        # target.mqtt_send_state()
         return target
 
 
-class TemperatureSerializer(InheritedModelSerializerMixin, serializers.ModelSerializer):
+class RoomsSerializer(InheritedModelSerializerMixin, serializers.ModelSerializer):
     class Meta:
-        model = Temperature
+        model = Room
         fields = "__all__"
-
-
-class DeviceSerializer(InheritedModelSerializerMixin, serializers.ModelSerializer):
-    class Meta:
-        model = Device
-        fields = "__all__"
-
-
-class TestSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Device
-        fields = "__all__"
-
-    def to_internal_value(self, data):
-        print(self.instance)
-        return super().to_internal_value(data)

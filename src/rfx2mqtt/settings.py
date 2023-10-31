@@ -26,12 +26,13 @@ SECRET_KEY = "django-insecure-nyt*$r0lr20vw3gbovh$z427w-1b28!awaknx_m@6_&zma#k^2
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -42,6 +43,7 @@ INSTALLED_APPS = [
     "constance",
     "constance.backends.database",
     "rest_framework",
+    "frontend",
     "django_htmx",
     "crispy_forms",
     "crispy_bootstrap5",
@@ -56,6 +58,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
@@ -144,7 +147,17 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 
+print(BASE_DIR)
+
+STATICFILES_DIRS = [
+    BASE_DIR / "frontend/templates/frontend/static",
+]
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# CORS
+
+CORS_ORIGIN_ALLOW_ALL = True

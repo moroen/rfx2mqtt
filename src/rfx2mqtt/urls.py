@@ -22,6 +22,7 @@ from devices.views import DeviceListView
 urlpatterns = [
     path("", DeviceListView.as_view(), name="index"),
     path("gui/", include("gui.urls")),
+    path("frontend/", include("frontend.urls")),
     path("devices/", include("devices.urls", "DEVICES")),
     path("rooms/", include("rooms.urls", "ROOMS")),
     path("api/", include("api.urls", "API")),
